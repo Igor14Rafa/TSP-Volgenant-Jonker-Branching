@@ -8,7 +8,6 @@ public class No {
 	private No pai;
 	private ArrayList<No> filhos;
 	private int profundidade;
-	private int tamArv;
 	private int custo;
 	private ArrayList<Aresta> incluidas;
 	private ArrayList<Aresta> excluidas;
@@ -235,6 +234,6 @@ public class No {
 	}
 
 	public void setTamArv() {
-		this.tamArv = arv.size();
+		arv.size();
 	}
 }

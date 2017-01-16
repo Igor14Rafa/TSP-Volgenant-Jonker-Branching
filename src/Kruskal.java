@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class kruskal {
+public class Kruskal {
 
 	public List<Aresta> kruskalAlgorithm(List<Aresta> a, int count){
 		DisjointSet ds = new DisjointSet(count);
