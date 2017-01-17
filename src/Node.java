@@ -1,24 +1,24 @@
 import java.util.ArrayList;
 
 
-public class No {
+public class Node {
 	private int arvore[][];//guarda arvore geradora
-	private ArrayList<Aresta> arv;
+	private ArrayList<Edge> arv;
 	private int quantVertices;
-	private No pai;
-	private ArrayList<No> filhos;
+	private Node pai;
+	private ArrayList<Node> filhos;
 	private int profundidade;
 	private int custo;
-	private ArrayList<Aresta> incluidas;
-	private ArrayList<Aresta> excluidas;
+	private ArrayList<Edge> incluidas;
+	private ArrayList<Edge> excluidas;
 
-	public No(ArrayList<Aresta> a, int tam){
+	public Node(ArrayList<Edge> a, int tam){
 		quantVertices = tam;
-		arv = new ArrayList<Aresta>();
+		arv = new ArrayList<Edge>();
 		arv.addAll(a);
 		pai = null;
-		incluidas = new ArrayList<Aresta>();
-		excluidas = new ArrayList<Aresta>();
+		incluidas = new ArrayList<Edge>();
+		excluidas = new ArrayList<Edge>();
 		custo =0;
 	}
 
@@ -105,7 +105,7 @@ public class No {
 	}
 
 
-	public int compareTo(No arg0) {
+	public int compareTo(Node arg0) {
 		if(this.getCusto() > arg0.getCusto()){
 			return 1;
 		}
@@ -117,7 +117,7 @@ public class No {
 		}
 	}
 
-	public boolean verificaIncluidas(Aresta a){
+	public boolean verificaIncluidas(Edge a){
 		int i;
 		for(i=0;i<incluidas.size();i++){
 			if( (a.getAnt()==incluidas.get(i).getAnt()||a.getAnt()==incluidas.get(i).getProx()) && (a.getProx()==incluidas.get(i).getAnt()||a.getProx()==incluidas.get(i).getProx()) ){
@@ -159,7 +159,7 @@ public class No {
 		return false;
 	}
 
-	public boolean verificaArv(Aresta a){
+	public boolean verificaArv(Edge a){
 		int i;
 		for(i=0;i<arv.size();i++){
 			if( (a.getAnt()==arv.get(i).getAnt()||a.getAnt()==arv.get(i).getProx()) && (a.getProx()==arv.get(i).getAnt()||a.getProx()==arv.get(i).getProx()) ){
@@ -169,9 +169,9 @@ public class No {
 		return false;
 	}
 
-	public void addFilho(No no){
-		no.setPai(this);
-		filhos.add(no);
+	public void addFilho(Node node){
+		node.setPai(this);
+		filhos.add(node);
 	}
 
 	public int[][] getArvore() {
@@ -180,16 +180,16 @@ public class No {
 	public void setArvore(int arvore[][]) {
 		this.arvore = arvore;
 	}
-	public No getPai() {
+	public Node getPai() {
 		return pai;
 	}
-	public void setPai(No pai) {
+	public void setPai(Node pai) {
 		this.pai = pai;
 	}
-	public ArrayList<No> getFilhos() {
+	public ArrayList<Node> getFilhos() {
 		return filhos;
 	}
-	public void setFilhos(ArrayList<No> filhos) {
+	public void setFilhos(ArrayList<Node> filhos) {
 		this.filhos = filhos;
 	}
 	public int getProfundidade() {
@@ -210,22 +210,22 @@ public class No {
 	public int getQuantVertices() {
 		return quantVertices;
 	}
-	public ArrayList<Aresta> getArv(){
+	public ArrayList<Edge> getArv(){
 		return arv;
 	}
 	public void setQuantVertices(int quantVertices) {
 		this.quantVertices = quantVertices;
 	}
-	public ArrayList<Aresta> getIncluidas() {
+	public ArrayList<Edge> getIncluidas() {
 		return incluidas;
 	}
-	public void setIncluidas(ArrayList<Aresta> incluidas) {
+	public void setIncluidas(ArrayList<Edge> incluidas) {
 		this.incluidas = incluidas;
 	}
-	public ArrayList<Aresta> getExcluidas() {
+	public ArrayList<Edge> getExcluidas() {
 		return excluidas;
 	}
-	public void setExcluidas(ArrayList<Aresta> excluidas) {
+	public void setExcluidas(ArrayList<Edge> excluidas) {
 		this.excluidas = excluidas;
 	}
 

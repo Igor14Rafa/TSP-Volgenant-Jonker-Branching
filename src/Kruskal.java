@@ -6,13 +6,13 @@ import java.util.List;
 
 public class Kruskal {
 
-	public List<Aresta> kruskalAlgorithm(List<Aresta> a, int count){
+	public List<Edge> kruskalAlgorithm(List<Edge> a, int count){
 		DisjointSet ds = new DisjointSet(count);
-		List<Aresta> spanningTree = new ArrayList<Aresta>();
+		List<Edge> spanningTree = new ArrayList<Edge>();
 		Collections.sort(a);
 		int i = 0;
 		while(i != a.size() && spanningTree.size() != count - 1){
-			Aresta e = a.get(i);
+			Edge e = a.get(i);
 			if(ds.find(e.getAnt()) != ds.find(e.getProx())){
 				spanningTree.add(e);
 				ds.union(e.getAnt(), e.getProx());
@@ -24,14 +24,14 @@ public class Kruskal {
 	}
 
 
-	public List<Aresta> kruskalAlgorithm(List<Aresta> a, int count, int restante){
+	public List<Edge> kruskalAlgorithm(List<Edge> a, int count, int restante){
 		DisjointSet ds = new DisjointSet(count);
-		List<Aresta> spanningTree = new ArrayList<Aresta>();
+		List<Edge> spanningTree = new ArrayList<Edge>();
 		Collections.sort(a);
 		int i = 0;
 
 		while(i != a.size() && spanningTree.size() != restante - 3){
-			Aresta e = a.get(i);
+			Edge e = a.get(i);
 			if(ds.find(e.getAnt()) != ds.find(e.getProx())){
 				spanningTree.add(e);
 				ds.union(e.getAnt(), e.getProx());
@@ -41,13 +41,13 @@ public class Kruskal {
 		return spanningTree;
 
 	}
-	public ArrayList<Aresta> kruskalAlgorithm(ArrayList<Aresta> a, int count){
+	public ArrayList<Edge> kruskalAlgorithm(ArrayList<Edge> a, int count){
 		DisjointSet ds = new DisjointSet(count);
-		ArrayList<Aresta> spanningTree = new ArrayList<Aresta>();
+		ArrayList<Edge> spanningTree = new ArrayList<Edge>();
 		Collections.sort(a);
 		int i = 0;
 		while(i != a.size() && spanningTree.size() != count - 1){
-			Aresta e = a.get(i);
+			Edge e = a.get(i);
 			if(ds.find(e.getAnt()) != ds.find(e.getProx())){
 				spanningTree.add(e);
 				ds.union(e.getAnt(), e.getProx());
@@ -58,9 +58,9 @@ public class Kruskal {
 
 	}
 
-	public List<Aresta> kruskalAlgorithm(List<Aresta> a, int count, ArrayList<Aresta> incluido){
+	public List<Edge> kruskalAlgorithm(List<Edge> a, int count, ArrayList<Edge> incluido){
 		DisjointSet ds = new DisjointSet(count);
-		ArrayList<Aresta> spanningTree = new ArrayList<Aresta>();
+		ArrayList<Edge> spanningTree = new ArrayList<Edge>();
 		Collections.sort(a);
 		int j;
 
@@ -70,7 +70,7 @@ public class Kruskal {
 		int i = 0;
 
 		while(i != a.size() && spanningTree.size() != count - 1){
-			Aresta e = a.get(i);
+			Edge e = a.get(i);
 			if(ds.find(e.getAnt()) != ds.find(e.getProx())){
 				spanningTree.add(e);
 				ds.union(e.getAnt(), e.getProx());

@@ -4,19 +4,19 @@ import java.util.List;
 
 public class BranchAndBound {
 
-	private Arvore busca;
-	private ArrayList<Aresta> grafo;
-	private No titular;
+	private Tree busca;
+	private ArrayList<Edge> grafo;
+	private Node titular;
 	Kruskal k = new Kruskal();
 	private int quantVertices;
 	private int quantPodas;
 	private int quantNoAnalisados;
 
-	public BranchAndBound(List<Aresta> a, int numVertices) {
+	public BranchAndBound(List<Edge> a, int numVertices) {
 		this.setQuantVertices(numVertices);
-		grafo = new ArrayList<Aresta>();
+		grafo = new ArrayList<Edge>();
 		grafo.addAll(a);
-		this.busca = new Arvore(OneTree(a, numVertices), numVertices);// formac�o da raiz
+		this.busca = new Tree(OneTree(a, numVertices), numVertices);// formac�o da raiz
 
 		System.out.println("Custo da primeira arvore gerada = " + busca.getRaiz().getCusto());
 		this.titular = null;
@@ -24,9 +24,9 @@ public class BranchAndBound {
 		quantNoAnalisados=0;
 	}
 
-	public No branch() {
-		No aux, inter;
-		ArrayList<No> fronteira = new ArrayList<No>();
+	public Node branch() {
+		Node aux, inter;
+		ArrayList<Node> fronteira = new ArrayList<Node>();
 		int flagTitular = 0, verticeAux, i;
 		fronteira.add(busca.getRaiz());
 		while (fronteira.size() > 0) {
@@ -39,13 +39,13 @@ public class BranchAndBound {
 					flagTitular = 1;
 				} else {
 					verticeAux = aux.verificaGrau();
-					ArrayList<Aresta> livres = new ArrayList<Aresta>();
-					Aresta arestaAux = null;
+					ArrayList<Edge> livres = new ArrayList<Edge>();
+					Edge arestaAux = null;
 					Collections.sort(aux.getArv());
 					for (i = 0; i < aux.getTamArv(); i++) {
 						if (aux.getArv().get(i).getAnt() == verticeAux || 
 							aux.getArv().get(i).getProx() == verticeAux) {
-							arestaAux = new Aresta(aux.getArv().get(i).getProx(), 
+							arestaAux = new Edge(aux.getArv().get(i).getProx(), 
 												   aux.getArv().get(i).getAnt(), 
 												   aux.getArv().get(i).getPeso());
 							if (!aux.verificaIncluidas(arestaAux)) {
@@ -58,22 +58,22 @@ public class BranchAndBound {
 
 					switch (livres.size()) {
 					case 1:
-						inter = particao1(aux, livres);
+						inter = geraNo1(aux, livres);
 						quantNoAnalisados++;
 						if(inter != null)
 							fronteira.add(inter);
 						break;
 					case 2:
-						inter = particao1(aux, livres);
+						inter = geraNo1(aux, livres);
 						quantNoAnalisados++;
 						if(inter != null)
 							fronteira.add(inter);
-						inter = particao2(aux, livres);
+						inter = geraNo2(aux, livres);
 						quantNoAnalisados++;
 						if(inter != null)
 							fronteira.add(inter);
 
-						inter = particao3(aux, livres,verticeAux);
+						inter = geraNo3(aux, livres,verticeAux);
 						quantNoAnalisados++;
 						if(inter != null)
 							fronteira.add(inter);
@@ -96,13 +96,13 @@ public class BranchAndBound {
 						titular = aux;
 						quantPodas++;
 					} else {
-						ArrayList<Aresta> livres = new ArrayList<Aresta>();
-						Aresta arestaAux = null;
+						ArrayList<Edge> livres = new ArrayList<Edge>();
+						Edge arestaAux = null;
 						Collections.sort(aux.getArv());
 						for (i = 0; i < aux.getTamArv(); i++) {
 							if (aux.getArv().get(i).getAnt() == verticeAux
 									|| aux.getArv().get(i).getProx() == verticeAux) {
-								arestaAux = new Aresta(aux.getArv().get(i)
+								arestaAux = new Edge(aux.getArv().get(i)
 										.getProx(), aux.getArv().get(i)
 										.getAnt(), aux.getArv().get(i)
 										.getPeso());
@@ -116,28 +116,28 @@ public class BranchAndBound {
 
 						switch (livres.size()) {
 						case 1:
-							inter = particao1(aux, livres);
+							inter = geraNo1(aux, livres);
 							quantNoAnalisados++;
 							if(inter != null)
 								fronteira.add(inter);
 							break;
 						case 2:
-							inter = particao1(aux, livres);
+							inter = geraNo1(aux, livres);
 							quantNoAnalisados++;
 							if(inter != null)
 								fronteira.add(inter);
-							inter = particao2(aux, livres);
+							inter = geraNo2(aux, livres);
 							quantNoAnalisados++;
 							if(inter != null)
 								fronteira.add(inter);
-							inter = particao3(aux, livres,verticeAux);
+							inter = geraNo3(aux, livres,verticeAux);
 							quantNoAnalisados++;
 							if(inter != null)
 								fronteira.add(inter);
 							break;
 						default:
 						}
-
+						
 					}
 				}
 			}
@@ -166,21 +166,21 @@ public class BranchAndBound {
 		return titular;
 	}
 
-	private No particao3(No a, ArrayList<Aresta> livres, int vertice) {
-		No result;
-		No aux = new No(a.getArv(), a.getTamArv());
+	private Node geraNo3(Node a, ArrayList<Edge> livres, int vertice) {
+		Node result;
+		Node aux = new Node(a.getArv(), a.getTamArv());
 
 		aux.getIncluidas().addAll(a.getIncluidas());
 		aux.getExcluidas().addAll(a.getExcluidas());
-		Aresta a1 = new Aresta(livres.get(0).getProx(), livres.get(0).getAnt(),
+		Edge a1 = new Edge(livres.get(0).getProx(), livres.get(0).getAnt(),
 				livres.get(0).getPeso());
-		Aresta a2 = new Aresta(livres.get(1).getAnt(), livres.get(1).getProx(),
+		Edge a2 = new Edge(livres.get(1).getAnt(), livres.get(1).getProx(),
 				livres.get(1).getPeso());
 
 
 		aux.getIncluidas().add(a2);
 		aux.getIncluidas().add(a1);
-		result = oneTreeParticao3(aux.getIncluidas(), aux.getExcluidas(), aux, vertice);
+		result = oneTreeNo3(aux.getIncluidas(), aux.getExcluidas(), aux, vertice);
 		if (result == null) {
 			return null;
 		} else {
@@ -192,11 +192,11 @@ public class BranchAndBound {
 
 	}
 
-	private No oneTreeParticao3(ArrayList<Aresta> inc, ArrayList<Aresta> e,
-			No no, int vertice) {
-		No result;
+	private Node oneTreeNo3(ArrayList<Edge> inc, ArrayList<Edge> e,
+			Node node, int vertice) {
+		Node result;
 		int i, j;
-		ArrayList<Aresta> grafoAux = new ArrayList<Aresta>();
+		ArrayList<Edge> grafoAux = new ArrayList<Edge>();
 		grafoAux.addAll(grafo);
 		// removendo as arestas do grafo original
 		for (i = 0; i < e.size(); i++) {
@@ -235,16 +235,16 @@ public class BranchAndBound {
 				i--;
 			}
 		}
-		result = OneTreeParticoes3(grafoAux, quantVertices, inc, no);
+		result = oneTreeParticaoNo3(grafoAux, quantVertices, inc, node);
 
 		return result;
 	}
 
-	public No OneTreeParticoes3(List<Aresta> a, int num_de_vertices,ArrayList<Aresta> ins, No no) {
+	public Node oneTreeParticaoNo3(List<Edge> a, int num_de_vertices,ArrayList<Edge> ins, Node node) {
 		int x,restante=0;
-		List<Aresta> guard = new ArrayList<Aresta>();// guarda as arestas
+		List<Edge> guard = new ArrayList<Edge>();// guarda as arestas
 		// ligadas a 1
-		List<Aresta> onetree = new ArrayList<Aresta>();
+		List<Edge> onetree = new ArrayList<Edge>();
 
 		for (int i = 1; i < a.size(); i++) {
 
@@ -261,13 +261,13 @@ public class BranchAndBound {
 				restante++;
 			}
 		}
-		List<Aresta> result = k.kruskalAlgorithm(onetree, num_de_vertices,num_de_vertices-restante);// Retorna
+		List<Edge> result = k.kruskalAlgorithm(onetree, num_de_vertices,num_de_vertices-restante);// Retorna
 		// a
 		// árvore
 		// geradora
 		// da
 		// One-tree
-		List<Aresta> result1 = k.kruskalAlgorithm(guard, num_de_vertices);
+		List<Edge> result1 = k.kruskalAlgorithm(guard, num_de_vertices);
 
 		for (int j = 0; j < ins.size(); j++) {
 			result.add(ins.get(j));
@@ -285,7 +285,7 @@ public class BranchAndBound {
 			}
 		}
 
-		No n = new No((ArrayList<Aresta>) result, num_de_vertices);
+		Node n = new Node((ArrayList<Edge>) result, num_de_vertices);
 		if (n.getTamArv() != quantVertices - 1 || n.verificaGrau0() == true) {
 			return null;
 		}
@@ -297,22 +297,22 @@ public class BranchAndBound {
 
 
 
-	private No particao2(No a, ArrayList<Aresta> livres) {
-		No result;
-		No aux = new No(a.getArv(), a.getTamArv());
+	private Node geraNo2(Node a, ArrayList<Edge> livres) {
+		Node result;
+		Node aux = new Node(a.getArv(), a.getTamArv());
 
 		aux.getIncluidas().addAll(a.getIncluidas());
 		aux.getExcluidas().addAll(a.getExcluidas());
-		Aresta a1 = new Aresta(livres.get(0).getProx(), livres.get(0).getAnt(),
+		Edge a1 = new Edge(livres.get(0).getProx(), livres.get(0).getAnt(),
 				livres.get(0).getPeso());
-		Aresta a2 = new Aresta(livres.get(1).getAnt(), livres.get(1).getProx(),
+		Edge a2 = new Edge(livres.get(1).getAnt(), livres.get(1).getProx(),
 				livres.get(1).getPeso());
 
 
 		aux.getExcluidas().add(a2);
 		aux.getIncluidas().add(a1);
 
-		result = oneTreeParticao2(aux.getIncluidas(), aux.getExcluidas(), aux);
+		result = oneTreeNo2(aux.getIncluidas(), aux.getExcluidas(), aux);
 		if (result == null) {
 			return null;
 		} else {
@@ -324,11 +324,11 @@ public class BranchAndBound {
 
 	}
 
-	private No oneTreeParticao2(ArrayList<Aresta> inc, ArrayList<Aresta> exc,
-			No no) {
-		No result;
+	private Node oneTreeNo2(ArrayList<Edge> inc, ArrayList<Edge> exc,
+			Node node) {
+		Node result;
 		int i, j;
-		ArrayList<Aresta> grafoAux = new ArrayList<Aresta>();
+		ArrayList<Edge> grafoAux = new ArrayList<Edge>();
 		grafoAux.addAll(grafo);
 		// removendo as arestas do grafo orignal
 		for (i = 0; i < exc.size(); i++) {
@@ -359,65 +359,16 @@ public class BranchAndBound {
 			}
 		}
 
-		result = OneTreeParticoes2(grafoAux, quantVertices, inc, no);
+		result = oneTreeParticaoNo2(grafoAux, quantVertices, inc, node);
 
 		return result;
 	}
 
-	private No particao1(No a, ArrayList<Aresta> livres) {
-
-		No result;
-		No aux = new No(a.getArv(), a.getTamArv());
-
-		aux.getIncluidas().addAll(a.getIncluidas());
-		aux.getExcluidas().addAll(a.getExcluidas());
-		Aresta a1 = new Aresta(livres.get(0).getProx(), livres.get(0).getAnt(),
-				livres.get(0).getPeso());
-		aux.getExcluidas().add(a1);
-		result = oneTreeParticao1(aux.getIncluidas(), aux.getExcluidas(), aux);
-		if (result.verificaExcluidas()) {
-			return null;
-		} else {
-			result.setExcluidas(aux.getExcluidas());
-			result.setIncluidas(aux.getIncluidas());
-			result.setPai(a);
-			return result;
-		}
-
-	}
-
-	private No oneTreeParticao1(ArrayList<Aresta> inc, ArrayList<Aresta> e,
-			No no) {
-		No result;
-		int i, j;
-		ArrayList<Aresta> grafoAux = new ArrayList<Aresta>();
-		grafoAux.addAll(grafo);
-		// removendo as arestas do grafo orignal
-		for (i = 0; i < e.size(); i++) {
-			for (int q = 0; q < 2; q++) {
-				for (j = 0; j < grafoAux.size(); j++) {
-					if ((e.get(i).getAnt() == grafoAux.get(j).getAnt() || e
-							.get(i).getAnt() == grafoAux.get(j).getProx())
-							&& (e.get(i).getProx() == grafoAux.get(j).getAnt() || e
-							.get(i).getProx() == grafoAux.get(j)
-							.getProx())) {
-						grafoAux.remove(j);
-						break;
-					}
-				}
-			}
-		}
-
-		result = OneTreeParticoes(grafoAux, quantVertices, inc, no);
-
-		return result;
-	}
-
-	public No OneTreeParticoes2(List<Aresta> a, int num_de_vertices,
-			ArrayList<Aresta> ins, No no) {
+	public Node oneTreeParticaoNo2(List<Edge> a, int num_de_vertices,
+			ArrayList<Edge> ins, Node node) {
 		int x,restante=0;
-		List<Aresta> guard = new ArrayList<Aresta>();// guarda as arestas ligadas a 1
-		List<Aresta> onetree = new ArrayList<Aresta>();
+		List<Edge> guard = new ArrayList<Edge>();// guarda as arestas ligadas a 1
+		List<Edge> onetree = new ArrayList<Edge>();
 
 		for (int i = 1; i < a.size(); i++) {
 
@@ -435,8 +386,8 @@ public class BranchAndBound {
 			}
 		}
 		// Retorna a �rvore geradora da One-tree e armazena e result
-		List<Aresta> result = k.kruskalAlgorithm(onetree, num_de_vertices,num_de_vertices-restante);
-		List<Aresta> result1 = k.kruskalAlgorithm(guard, num_de_vertices);
+		List<Edge> result = k.kruskalAlgorithm(onetree, num_de_vertices,num_de_vertices-restante);
+		List<Edge> result1 = k.kruskalAlgorithm(guard, num_de_vertices);
 
 		for (int j = 0; j < ins.size(); j++) {
 			result.add(ins.get(j));
@@ -454,7 +405,7 @@ public class BranchAndBound {
 			}
 		}
 
-		No n = new No((ArrayList<Aresta>) result, num_de_vertices);
+		Node n = new Node((ArrayList<Edge>) result, num_de_vertices);
 		if (n.getTamArv() != quantVertices - 1 || n.verificaGrau0() == true) {
 			return null;
 		}
@@ -465,14 +416,64 @@ public class BranchAndBound {
 		return n;
 	}
 
+	private Node geraNo1(Node a, ArrayList<Edge> livres) {
+
+		Node result;
+		Node aux = new Node(a.getArv(), a.getTamArv());
+
+		aux.getIncluidas().addAll(a.getIncluidas());
+		aux.getExcluidas().addAll(a.getExcluidas());
+		Edge a1 = new Edge(livres.get(0).getProx(), livres.get(0).getAnt(),
+				livres.get(0).getPeso());
+		aux.getExcluidas().add(a1);
+		result = oneTreeNo1(aux.getIncluidas(), aux.getExcluidas(), aux);
+		if (result.verificaExcluidas()) {
+			return null;
+		} else {
+			result.setExcluidas(aux.getExcluidas());
+			result.setIncluidas(aux.getIncluidas());
+			result.setPai(a);
+			return result;
+		}
+
+	}
+
+	private Node oneTreeNo1(ArrayList<Edge> inc, ArrayList<Edge> e,
+			Node node) {
+		Node result;
+		int i, j;
+		ArrayList<Edge> grafoAux = new ArrayList<Edge>();
+		grafoAux.addAll(grafo);
+		// removendo as arestas do grafo orignal
+		for (i = 0; i < e.size(); i++) {
+			for (int q = 0; q < 2; q++) {
+				for (j = 0; j < grafoAux.size(); j++) {
+					if ((e.get(i).getAnt() == grafoAux.get(j).getAnt() || e
+							.get(i).getAnt() == grafoAux.get(j).getProx())
+							&& (e.get(i).getProx() == grafoAux.get(j).getAnt() || e
+							.get(i).getProx() == grafoAux.get(j)
+							.getProx())) {
+						grafoAux.remove(j);
+						break;
+					}
+				}
+			}
+		}
+
+		result = OneTreeParticoes(grafoAux, quantVertices, inc, node);
+
+		return result;
+	}
+
+
 	public BranchAndBound() {
 
 	}
 
-	public No OneTreeParticoes(List<Aresta> a, int num_de_vertices,
-			ArrayList<Aresta> ins, No no) {
-		List<Aresta> guard = new ArrayList<Aresta>();// guarda as arestas ligadas a 1
-		List<Aresta> onetree = new ArrayList<Aresta>();
+	public Node OneTreeParticoes(List<Edge> a, int num_de_vertices,
+			ArrayList<Edge> ins, Node node) {
+		List<Edge> guard = new ArrayList<Edge>();// guarda as arestas ligadas a 1
+		List<Edge> onetree = new ArrayList<Edge>();
 
 		for (int i = 1; i < a.size(); i++) {
 
@@ -484,8 +485,8 @@ public class BranchAndBound {
 				onetree.add(a.get(i));
 		}
 
-		List<Aresta> result = k.kruskalAlgorithm(onetree, num_de_vertices);// Retorna a �rvore geradora da One-tree
-		List<Aresta> result1 = k.kruskalAlgorithm(guard, num_de_vertices);
+		List<Edge> result = k.kruskalAlgorithm(onetree, num_de_vertices);// Retorna a �rvore geradora da One-tree
+		List<Edge> result1 = k.kruskalAlgorithm(guard, num_de_vertices);
 
 		for (int h = 0; h < result1.size(); h++) {
 			if (result.size() < num_de_vertices - 1) {
@@ -499,13 +500,13 @@ public class BranchAndBound {
 			}
 		}
 
-		No n = new No((ArrayList<Aresta>) result, num_de_vertices);
+		Node n = new Node((ArrayList<Edge>) result, num_de_vertices);
 		n.CalculoCusto();
 
 		return n;
 	}
 
-	private boolean verificaArestas(List<Aresta> a, Aresta x) {
+	private boolean verificaArestas(List<Edge> a, Edge x) {
 		int i;
 		for (i = 0; i < a.size(); i++) {
 			if ((x.getAnt() == a.get(i).getAnt() || x.getAnt() == a.get(i)
@@ -519,10 +520,10 @@ public class BranchAndBound {
 	}
 
 	// Primeira itera��o
-	public No OneTree(List<Aresta> a, int num_de_vertices) {
+	public Node OneTree(List<Edge> a, int num_de_vertices) {
 
-		List<Aresta> guard = new ArrayList<Aresta>();// guarda as arestas ligadas a 1
-		List<Aresta> onetree = new ArrayList<Aresta>();
+		List<Edge> guard = new ArrayList<Edge>();// guarda as arestas ligadas a 1
+		List<Edge> onetree = new ArrayList<Edge>();
 
 		for (int i = 1; i < a.size(); i++) {
 
@@ -534,8 +535,8 @@ public class BranchAndBound {
 				onetree.add(a.get(i));
 		}
 
-		List<Aresta> result = k.kruskalAlgorithm(onetree, num_de_vertices);// Retorna a �rvore geradora da One-tree
-		List<Aresta> result1 = k.kruskalAlgorithm(guard, num_de_vertices);
+		List<Edge> result = k.kruskalAlgorithm(onetree, num_de_vertices);// Retorna a �rvore geradora da One-tree
+		List<Edge> result1 = k.kruskalAlgorithm(guard, num_de_vertices);
 
 		// Enquanto o n�mero de arestas for igual ao n�mero de v�rtices(O que
 		// caracteriza um ciclo)
@@ -546,7 +547,7 @@ public class BranchAndBound {
 			}
 		}
 
-		No n = new No((ArrayList<Aresta>) result, num_de_vertices);
+		Node n = new Node((ArrayList<Edge>) result, num_de_vertices);
 		n.CalculoCusto();
 
 		// Checar
@@ -564,19 +565,19 @@ public class BranchAndBound {
 	}
 
 	//Getters and Setters 
-	public Arvore getBusca() {
+	public Tree getBusca() {
 		return busca;
 	}
 
-	public void setBusca(Arvore busca) {
+	public void setBusca(Tree busca) {
 		this.busca = busca;
 	}
 
-	public No getTitular() {
+	public Node getTitular() {
 		return titular;
 	}
 
-	public void setTitular(No titular) {
+	public void setTitular(Node titular) {
 		this.titular = titular;
 	}
 

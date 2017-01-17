@@ -1,12 +1,12 @@
 
 
-public class Aresta implements Comparable<Aresta> {
+public class Edge implements Comparable<Edge> {
 
 	private int prox;
 	private int ant;
 	private int peso;
 
-	public Aresta(int prox, int ant, int peso) {
+	public Edge(int prox, int ant, int peso) {
 		super();
 		this.prox = prox;
 		this.ant = ant;
@@ -37,7 +37,7 @@ public class Aresta implements Comparable<Aresta> {
 		this.peso = peso;
 	}
 
-	public int compareTo(Aresta arg0) {
+	public int compareTo(Edge arg0) {
 		if(this.getPeso() > arg0.getPeso()){
 			return 1;
 		}

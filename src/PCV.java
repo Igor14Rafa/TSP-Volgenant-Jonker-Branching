@@ -30,7 +30,7 @@ public class PCV extends javax.swing.JFrame {
 	double tempo;
 	int aux, aux2, aux3, aux5, aux6, num = 0;
 	int i, j, m, n;
-	List<Aresta> a = new ArrayList<Aresta>();
+	List<Edge> a = new ArrayList<Edge>();
 	Random gera = new Random();
 	Prim referencia = new Prim();
 	Kruskal k = new Kruskal();
@@ -46,6 +46,7 @@ public class PCV extends javax.swing.JFrame {
 		getContentPane().setMaximumSize(new Dimension(2147483647, 2147483494));
 		setMaximumSize(new Dimension(2147483406, 2147483647));
 		setTitle("Trabalho Pesquisa Operacional");
+		JOptionPane.showMessageDialog(null,"Primeiro insira o n° de vértices\nDepois escolha entre gerar grafo aleatório\nou ler do arquivo");
 		initComponents();
 	}
 
@@ -262,7 +263,7 @@ public class PCV extends javax.swing.JFrame {
 		for (int y = 1; y <= num_de_vertices; y++) {
 			for (int x = 1; x <= num_de_vertices; x++) {
 				if (matriz_adjacencia[y][x] > 0 && matriz_adjacencia[y][x] < 999) {
-					Aresta e1 = new Aresta(y, x, matriz_adjacencia[y][x]);
+					Edge e1 = new Edge(y, x, matriz_adjacencia[y][x]);
 					a.add(e1);
 				}	
 			}
@@ -270,7 +271,7 @@ public class PCV extends javax.swing.JFrame {
 
 		BranchAndBound b = new BranchAndBound(a, num_de_vertices + 1);
 		long tempoInicio = System.currentTimeMillis();
-		No k = b.branch();
+		Node k = b.branch();
 
 		textResultado.setText("");
 		textResultado.append("Arestas da solu��o �tima: \n");
